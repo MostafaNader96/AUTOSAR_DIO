@@ -4,18 +4,18 @@
 #include "SchM_Dio.h"
 
 
-#define PORTA	(*(volatile uint8*)0x003B)
-#define DDRA	(*(volatile uint8*)0x003A)
-#define PINA	(*(volatile uint8*)0x0039)
-#define PORTB	(*(volatile uint8*)0x0038)
-#define DDRB	(*(volatile uint8*)0x0037)
-#define PINB	(*(volatile uint8*)0x0036)
-#define PORTC	(*(volatile uint8*)0x0035)
-#define DDRC	(*(volatile uint8*)0x0034)
-#define PINC	(*(volatile uint8*)0x0033)
-#define PORTD	(*(volatile uint8*)0x0032)
-#define DDRD	(*(volatile uint8*)0x0031)
-#define PIND	(*(volatile uint8*)0x0030)
+#define PORTA	(*(volatile u8*)0x003B)
+#define DDRA	(*(volatile u8*)0x003A)
+#define PINA	(*(volatile u8*)0x0039)
+#define PORTB	(*(volatile u8*)0x0038)
+#define DDRB	(*(volatile u8*)0x0037)
+#define PINB	(*(volatile u8*)0x0036)
+#define PORTC	(*(volatile u8*)0x0035)
+#define DDRC	(*(volatile u8*)0x0034)
+#define PINC	(*(volatile u8*)0x0033)
+#define PORTD	(*(volatile u8*)0x0032)
+#define DDRD	(*(volatile u8*)0x0031)
+#define PIND	(*(volatile u8*)0x0030)
 
 
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
