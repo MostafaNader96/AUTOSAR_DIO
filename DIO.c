@@ -29,10 +29,10 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 	{
 		switch( ( ChannelId / 8 ) )
 		{
-			case:0 Level = PORTA >> ( ChannelId % 8 ) break;
-			case:1 Level = PORTB >> ( ChannelId % 8 )  break;
-			case:2 Level = PORTC >> ( ChannelId % 8 )  break;
-			case:3 Level = PORTD >> ( ChannelId % 8 )  break;
+			case 0: Level = PORTA >> ( ChannelId % 8 );  break;
+			case 1: Level = PORTB >> ( ChannelId % 8 );  break;
+			case 2: Level = PORTC >> ( ChannelId % 8 );  break;
+			case 3: Level = PORTD >> ( ChannelId % 8 );  break;
 			default: break;
 		}
 	}
@@ -50,10 +50,10 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 		{
 			switch( ( ChannelId / 8 ) )
 			{
-			case:0 PORTA |= 1 << ( ChannelId % 8 ) break;
-			case:1 PORTB |= 1 << ( ChannelId % 8 ) break;
-			case:2 PORTC |= 1 << ( ChannelId % 8 ) break;
-			case:3 PORTD |= 1 << ( ChannelId % 8 ) break;
+			case 0: PORTA |= 1 << ( ChannelId % 8 ); break;
+			case 1: PORTB |= 1 << ( ChannelId % 8 ); break;
+			case 2: PORTC |= 1 << ( ChannelId % 8 ); break;
+			case 3: PORTD |= 1 << ( ChannelId % 8 ); break;
 			default: break;
 			}
 		}
@@ -61,10 +61,10 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 		{
 			switch( ( ChannelId / 8 ) )
 			{
-			case:0 PORTA &= ~(1 << ( ChannelId % 8 ) ) break;
-			case:1 PORTB &= ~(1 << ( ChannelId % 8 ) ) break;
-			case:2 PORTC &= ~(1 << ( ChannelId % 8 ) ) break;
-			case:3 PORTD &= ~(1 << ( ChannelId % 8 ) ) break;
+			case 0: PORTA &= ~(1 << ( ChannelId % 8 ) ); break;
+			case 1: PORTB &= ~(1 << ( ChannelId % 8 ) ); break;
+			case 2: PORTC &= ~(1 << ( ChannelId % 8 ) ); break;
+			case 3: PORTD &= ~(1 << ( ChannelId % 8 ) ); break;
 			default: break;
 			}
 		}
@@ -77,17 +77,49 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 		
 }
 
-Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr )
-{
-	
-}
-
 Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
 {
+	Dio_PortLevelType PortLevel;
 	
+	if (4 <= PortId)
+	{
+		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_WRITE_PORT_SID, DIO_E_PARAM_INVALID_PORT_ID);
+	}	
+	else
+	{
+		switch( PortId )
+		{
+		case 0: PortLevel = PORTA; break;
+		case 1: PortLevel = PORTB; break;
+		case 2: PortLevel = PORTC; break;
+		case 3: PortLevel = PORTD; break;
+		default: break;
+		}
+	}
+		return PortLevel;
 }
 
 void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
+{
+	if (4 <= PortId)
+	{
+		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_WRITE_PORT_SID, DIO_E_PARAM_INVALID_PORT_ID);
+	}	
+	else
+	{
+		switch( PortId )
+		{
+		case 0: PORTA = Level; break;
+		case 1: PORTB = Level; break;
+		case 2: PORTC = Level; break;
+		case 3: PORTD = Level; break;
+		default: break;
+		}
+	}
+	
+}
+
+Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr )
 {
 	
 }

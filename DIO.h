@@ -4,6 +4,8 @@
 #include "Std_Types.h"
 #include "DIO_Cfg.h"
 
+#define	DIO_MODULE_ID	1
+#define	DIO_INSTANCE_ID	0
 
 /* Service IDs */
 #define DIO_READ_CHANNEL_SID           (u8)0x00
@@ -22,15 +24,15 @@
 
 
 /* Module Types */
-typedef uint8 Dio_ChannelType;		//Pin  Number
-typedef uint8 Dio_PortType;			//Port Number
-typedef uint8 Dio_LevelType;		//STD_LOW, STD_HIGH
-typedef uint8 Dio_PortLevelType;	//Size of Register
+typedef u8 Dio_ChannelType;		//Pin  Number
+typedef u8 Dio_PortType;			//Port Number
+typedef u8 Dio_LevelType;		//STD_LOW, STD_HIGH
+typedef u8 Dio_PortLevelType;	//Size of Register
 
 typedef struct
 {
-  uint8 mask;
-  uint8 offset;
+  u8 mask;
+  u8 offset;
   Dio_PortType PortIndex;
   
 } Dio_ChannelGroupType;
