@@ -4,7 +4,7 @@
 #include "Compiler.h"
 #include "Platform_Types.h"
 
-typedef u8  Std_ReturnType;
+typedef uint8  Std_ReturnType;
 
 #define STD_HIGH        1      
 #define STD_LOW         0      

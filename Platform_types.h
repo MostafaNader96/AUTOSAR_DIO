@@ -8,24 +8,24 @@
 #define TRUE        1
 #endif
 
-typedef unsigned char 		u8;
-typedef unsigned short 		u16;
-typedef unsigned long int 	u32;
-typedef signed char 		s8;
-typedef signed short 		s16;
-typedef signed long int 	s32;
-typedef float 				f32 ;
-typedef double 				f64 ;
-typedef long double 		f128 ;
+typedef unsigned char 		uint8;
+typedef unsigned short 		uint16;
+typedef unsigned long int 	uint32;
+typedef signed char 		sint8;
+typedef signed short 		sint16;
+typedef signed long int 	sint32;
+typedef float 				float32 ;
+typedef double 				float64 ;
+typedef long double 		float128 ;
 
-typedef u8*  				pu8;
-typedef u16* 				pu16;
-typedef u32* 				pu32;
-typedef s8*  				ps8;
-typedef s16* 				ps16;
-typedef s32* 				ps32;
-typedef f32* 				pf32;
-typedef f64* 				pf64;
+typedef uint8*  		    puint8;
+typedef uint16* 		    puint16;
+typedef uint32* 		    puint32;
+typedef sint8*  		    psint8;
+typedef sint16* 		    psint16;
+typedef sint32* 		    psint32;
+typedef float32* 		    pfloat32;
+typedef float64* 		    pfloat64;
 
 
 #endif
