@@ -5,7 +5,6 @@
 #include "DIO_MemMap.h"
 #include "SchM_Dio.h"
 
-
 #define PORTA	(*(volatile uint8*)0x003B)
 #define DDRA	(*(volatile uint8*)0x003A)
 #define PINA	(*(volatile uint8*)0x0039)
@@ -30,6 +29,7 @@
 #define OUTPUT				1
 #define INPUT				0
 #define PORT_REG_OFFSET		0x01
+#define UINT8_PTR_STEP		1
 
 typedef struct
 {
@@ -296,7 +296,42 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 	}
 
 }
+
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
 {
-
+	Dio_LevelType ChannelLevel=STD_LOW;
+	volatile puint8 DDRx;
+	volatile puint8 PINx;
+	volatile puint8 PORTx;
+	uint8 Channel_Num;
+	if( DIO_NUMBER_OF_CHANNELS >= ChannelId )
+	{
+		PORTx		= ((ConfigueredChnannels[ChannelId].DDR_ptr)+UINT8_PTR_STEP);
+		PINx	    = ((ConfigueredChnannels[ChannelId].DDR_ptr)-UINT8_PTR_STEP);
+		DDRx     	= (ConfigueredChnannels[ChannelId].DDR_ptr);
+		Channel_Num =  ConfigueredChnannels[ChannelId].pin;
+		if(OUTPUT == (*DDRx>>Channel_Num)&GET_BIT)
+		{
+			/*Disable Global Interrupts*/
+			asm("CLI");
+			*(PORTx)^=(GET_BIT<<Channel_Num);
+			ChannelLevel = (*PORTx >>Channel_Num) & GET_BIT ;
+			/*Enable Global Interrupts*/
+			asm("SEI");
+		}else
+		{
+			ChannelLevel = (*PINx >>Channel_Num) & GET_BIT;
+		}
+	}else
+	{
+		/*Error Detection is Activated during the Development Time based on the value of DIO_DEV_ERROR_DETECT*/
+		#if DIO_DEV_ERROR_DETECT == STD_HIGH
+			/*Report error to the DET Module */
+			Det_ReportError(DIO_MODULE_ID,DIO_INSTANCE_ID,DIO_FLIP_CHANNEL_SID,DIO_E_PARAM_INVALID_CHANNEL_ID);
+		#else
+			/* Do nothing */
+		#endif
+	}
+	return ChannelLevel;
 }
+

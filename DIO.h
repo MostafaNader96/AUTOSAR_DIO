@@ -168,6 +168,30 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
  ************************************************************************************/
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_PortLevelType Level );
 
+/*********************************************************************************************************/
+/* Service Name: Dio_FlipChannel                                                                         */
+/* Service ID[hex]: 0x11                                                                                 */
+/* Syncronization: Synchronous                                                                           */
+/* Reentrancy: Reentrant                                                                                 */
+/* Parameters (in): ChannelId -> ID of DIO channel.-.                                                    */
+/* Parameters (inout): None                                                                              */
+/* Parameters (out): None                                                                                */
+/* Return value: Dio_LevelType ->  STD_HIGH or STD_LOW                                                   */
+/* Description: Service to flip (change from 1 to 0 or from 0 to 1) the level of a channel and return    */
+/*                              the level of the channel after flip.                                     */
+/* SW Requirements Coverage:                                                                             */
+/* 		  1- SWS_Dio_00191 : If the specified channel is configured as an output channel,                  */
+/*                         the Dio_FlipChannel function shall read level of the channel                  */
+/*                         (requirements [DIO083] & [DIO084] are applicable) and invert it,              */
+/*                         then write the inverted level to the channel.                                 */
+/*                         The return value shall be the inverted level of the specified channel.        */
+/* 	    2- SWS_Dio_00192 : If the specified channel is configured as an input channel,                   */
+/*                         the Dio_FlipChannel function shall have no influence on the physical output.  */
+/*                        The return value shall be the level of the specified channel.                  */
+/* 	    3- SWS_Dio_00193 : If the specified channel is configured as an input channel,                   */
+/*                        the Dio_FlipChannel function shall have no influence on the result             */
+/*                        of the next Read-Service.                                                      */
+/*********************************************************************************************************/
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId);
 
 
