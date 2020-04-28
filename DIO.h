@@ -11,8 +11,8 @@
 #define  PORT_C								1
 #define  PORT_D								0
 
-#define	DIO_MODULE_ID	1
-#define	DIO_INSTANCE_ID	0
+#define	DIO_MODULE_ID						1
+#define	DIO_INSTANCE_ID						0
 
 /* Service IDs */
 #define DIO_READ_CHANNEL_SID           (uint8)0x00
@@ -29,12 +29,18 @@
 #define DIO_E_PARAM_INVALID_GROUP      (uint8)0x1F
 #define DIO_E_PARAM_POINTER            (uint8)0x20
 
+/*configuration types*/
+typedef struct
+{
+	volatile uint8* DDR_ptr;
+	uint8 pin;
+}Dio_ChannelCfgType;
 
 /* Module Types */
-typedef uint8 Dio_ChannelType;		//Pin  Number
-typedef uint8 Dio_PortType;			//Port Number
-typedef uint8 Dio_LevelType;		//STD_LOW, STD_HIGH
-typedef uint8 Dio_PortLevelType;	//Size of Register
+typedef uint8 Dio_ChannelType;
+typedef uint8 Dio_PortType;
+typedef uint8 Dio_LevelType;
+typedef uint8 Dio_PortLevelType;
 
 typedef struct
 {
@@ -44,13 +50,9 @@ typedef struct
   
 } Dio_ChannelGroupType;
 
-extern Dio_ChannelGroupType Groups[NUMBER_OF_CONFIGURED_GROUPS];
 
+extern const Dio_ChannelGroupType ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS];
 
-#define PORTA_ID (Dio_PortType)0
-#define PORTB_ID (Dio_PortType)1
-#define PORTC_ID (Dio_PortType)2
-#define PORTD_ID (Dio_PortType)3
 
 
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId);
@@ -116,7 +118,31 @@ Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId);
 /*********************************************************************************************************/
 void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level);
 
+/************************************************************************************
+ * Service Name: Dio_ReadChannelGroup
+ * Service ID[hex]: 0x04
+ * Sync/Async: Synchronous
+ * Reentrancy: Reentrant
+ * Parameters (in): ChannelGroupIdPtr - Pointer to ChannelGroup.
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: Dio_PortLevelType
+ * Description: Function to  read a subset of the adjoining bits of a port.
+ ************************************************************************************/
 Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr );
+
+/************************************************************************************
+ * Service Name: Dio_WriteChannelGroup
+ * Service ID[hex]: 0x11
+ * Sync/Async: Synchronous
+ * Reentrancy: Reentrant
+ * Parameters (in): ChannelGroupIdPtr - Pointer to ChannelGroup.
+ * 					Level -Value to be written
+ * Parameters (inout): None
+ * Parameters (out): None
+ * Return value: Dio_PortLevelType
+ * Description: Function to set a subset of the adjoining bits of a port to a specified level.
+ ************************************************************************************/
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_PortLevelType Level );
 
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId);
