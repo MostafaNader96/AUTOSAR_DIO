@@ -48,7 +48,7 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 	Dio_LevelType Local_Dio_LevelType=STD_LOW;
 	uint8 Local_Direction;
 	#if DIO_DEV_ERROR_DETECT == STD_HIGH
-		if (NUMBER_OF_CHANNELS<=ChannelId)
+		if (DIO_NUMBER_OF_CHANNELS<=ChannelId)
 		{
 			Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_READ_CHANNEL_SID, DIO_E_PARAM_INVALID_CHANNEL_ID);
 		}
@@ -79,7 +79,7 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 	
 	#if DIO_DEV_ERROR_DETECT == STD_HIGH
 	
-	if (NUMBER_OF_CHANNELS <= ChannelId)
+	if (DIO_NUMBER_OF_CHANNELS <= ChannelId)
 	{
 		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_WRITE_CHANNEL_SID, DIO_E_PARAM_INVALID_CHANNEL_ID);
 	}
