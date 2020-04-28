@@ -1,8 +1,18 @@
+/******************************/
+/* Author  : El-3fareet       */
+/* Version : V1.2.2           */
+/* Date    : 28-4-2020        */
+/******************************/
 #ifndef DIO_H_
 #define DIO_H_
 
 #include "Std_Types.h"
 #include "DIO_Cfg.h"
+
+#define DIO_VENDOR_ID    				(uint16)1
+#define DIO_SW_MAJOR_VERSION           	(uint8)1
+#define DIO_SW_MINOR_VERSION           	(uint8)2
+#define DIO_SW_PATCH_VERSION           	(uint8)2
 
 #define DIO_DEV_ERROR_DETECT				STD_HIGH
 /* Controller Ports */
@@ -11,8 +21,8 @@
 #define  PORT_C								1
 #define  PORT_D								0
 /* Module IDs*/
-#define	DIO_MODULE_ID						1
-#define	DIO_INSTANCE_ID						0
+#define	DIO_MODULE_ID						(uint16)1
+#define	DIO_INSTANCE_ID						(uint8)0
 
 /* Service IDs */
 #define DIO_READ_CHANNEL_SID           (uint8)0x00
@@ -21,6 +31,7 @@
 #define DIO_WRITE_PORT_SID             (uint8)0x03
 #define DIO_READ_CHANNEL_GROUP_SID     (uint8)0x04
 #define DIO_WRITE_CHANNEL_GROUP_SID    (uint8)0x05
+#define DIO_GET_VERSION_INFO_SID	   (uint8)0x12
 #define DIO_FLIP_CHANNEL_SID           (uint8)0x11
 
 /* DET codes  */
@@ -167,6 +178,20 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
  * Description: Function to set a subset of the adjoining bits of a port to a specified level.
  ************************************************************************************/
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_PortLevelType Level );
+
+/************************************************************************************
+* Service Name: Dio_GetVersionInfo													*
+* Service ID[hex]: 0x12																*
+* Sync/Async: Synchronous															*
+* Reentrancy: Reentrant																*
+* Parameters (in): None																*
+* Parameters (inout): None 															*
+* Parameters (out): VersionInfo -> Pointer to where to store the 					*
+								   version information of this module.				*
+* Return value: None 																*
+* Description: Function to get the version information of this module.				*
+************************************************************************************/
+void Dio_GetVersionInfo(Std_VersionInfoType *versioninfo);
 
 /*********************************************************************************************************/
 /* Service Name: Dio_FlipChannel                                                                         */

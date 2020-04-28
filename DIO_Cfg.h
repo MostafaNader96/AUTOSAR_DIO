@@ -1,6 +1,10 @@
+/******************************/
+/* Author  : El-3fareet       */
+/* Version : V1.2.2           */
+/* Date    : 28-4-2020        */
+/******************************/
 #ifndef DIO_CFG_H_
 #define DIO_CFG_H_
-
 
 
 #define DIO_NUMBER_OF_CHANNEL_GROUPS 				1

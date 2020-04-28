@@ -1,3 +1,8 @@
+/******************************/
+/* Author  : El-3fareet       */
+/* Version : V1.2.2           */
+/* Date    : 28-4-2020        */
+/******************************/
 #include "DIO.h"
 #if DIO_DEV_ERROR_DETECT == STD_HIGH
 #include "Det.h"
@@ -43,17 +48,24 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 	Dio_LevelType Local_Dio_LevelType=STD_LOW;
 	uint8 Local_Direction;
 	#if DIO_DEV_ERROR_DETECT == STD_HIGH
-		if (NUMBER_OF_CHANNELS<=ChannelId){
+		if (NUMBER_OF_CHANNELS<=ChannelId)
+		{
 			Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_READ_CHANNEL_SID, DIO_E_PARAM_INVALID_CHANNEL_ID);
 		}
-		else{
+		else
+		{
+			asm("cli");	/*Disable global interrupt*/
 			Local_Direction=((*(channels[ChannelId].DDR)) >> channels[ChannelId].pin) & GET_BIT;
 			Local_Dio_LevelType = ((*(channels[ChannelId].DDR + (PIN_PORT_MULT*Local_Direction - PIN_PORT_SUB))) >> channels[ChannelId].pin )& GET_BIT;
+			asm("sei");	/*Enable global interrupt*/
 		}
 	#elif DIO_DEV_ERROR_DETECT == STD_LOW
-		if(NUMBER_OF_CHANNELS>ChannelId){
+		if(NUMBER_OF_CHANNELS>ChannelId)
+		{
+			asm("cli");	/*Disable global interrupt*/
 			Local_Direction=((*(channels[ChannelId].DDR)) >> channels[ChannelId].pin) & GET_BIT;
 			Local_Dio_LevelType = ((*(channels[ChannelId].DDR + (PIN_PORT_MULT*Local_Direction - PIN_PORT_SUB))) >> channels[ChannelId].pin )& GET_BIT;
+			asm("sei");	/*Enable global interrupt*/
 		}
 	#endif
 	if(Local_Dio_LevelType!=STD_LOW)
@@ -81,13 +93,13 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 			{
 				asm("cli");	/*Disable global interrupt*/
 				*(configueredChannels[ChannelId].DDR + PORT_REG_OFFSET ) |= ( SET_BIT << configueredChannels[ChannelId].pin );
-				asm("sei");	/*Disable global interrupt*/
+				asm("sei");	/*Enable global interrupt*/
 			}
 			else if( STD_LOW == Level )
 			{
 				asm("cli");	/*Disable global interrupt*/
 				*(configueredChannels[ChannelId].DDR + PORT_REG_OFFSET ) &= ~ ( CLR_BIT << configueredChannels[ChannelId].pin );
-				asm("sei");	/*Disable global interrupt*/
+				asm("sei");	/*Enable global interrupt*/
 			}
 			else
 			{
@@ -108,25 +120,23 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 		{
 			asm("cli");	/*Disable global interrupt*/
 			*(configueredChannels[ChannelId].DDR + PORT_REG_OFFSET ) |= SET_BIT << configueredChannels[ChannelId].pin;
-			asm("sei");	/*Disable global interrupt*/
+			asm("sei");	/*Enable global interrupt*/
 		}
 		else if( STD_LOW == Level )
 		{
 			asm("cli");	/*Disable global interrupt*/
 			*(configueredChannels[ChannelId].DDR + PORT_REG_OFFSET ) &= ~ ( CLR_BIT << configueredChannels[ChannelId].pin );
-			asm("sei");	/*Disable global interrupt*/
+			asm("sei");	/*Enable global interrupt*/
 		}
 		else
 		{
 			/* Do Nothing */
 		}
 	}
-	
 	else
 	{
 		/* Do nothing as the pin is input */
 	}
-	
 	#endif
 }
 
@@ -295,6 +305,25 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 		/*Do Nothing*/
 	}
 
+}
+
+void Dio_GetVersionInfo(Std_VersionInfoType *versioninfo)
+{
+#if DIO_DEV_ERROR_DETECT == STD_HIGH
+	if(NULL_PTR == versioninfo)
+	{
+		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_GET_VERSION_INFO_SID, DIO_E_PARAM_POINTER);
+	}
+	else
+#endif
+	{
+		versioninfo->vendorID = DIO_VENDOR_ID;
+		versioninfo->moduleID = DIO_MODULE_ID;
+		versioninfo->instanceID = DIO_INSTANCE_ID;
+		versioninfo->sw_major_version = DIO_SW_MAJOR_VERSION;
+		versioninfo->sw_minor_version = DIO_SW_MINOR_VERSION;
+		versioninfo->sw_patch_version = DIO_SW_PATCH_VERSION;
+	}
 }
 
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)

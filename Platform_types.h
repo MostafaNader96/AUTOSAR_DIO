@@ -1,3 +1,8 @@
+/******************************/
+/* Author  : El-3fareet       */
+/* Version : V1.0.0	          */
+/* Date    : 28-4-2020        */
+/******************************/
 #ifndef PLATFORM_TYPES_H_
 #define PLATFORM_TYPES_H_
 

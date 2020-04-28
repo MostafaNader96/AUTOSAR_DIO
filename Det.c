@@ -1,3 +1,8 @@
+/******************************/
+/* Author  : El-3fareet       */
+/* Version : V1.0.0           */
+/* Date    : 28-4-2020        */
+/******************************/
 #include "Std_Types.h"
 
 #include "Det.h"
