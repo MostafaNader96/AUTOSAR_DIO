@@ -5,12 +5,12 @@
 #include "DIO_Cfg.h"
 
 #define DIO_DEV_ERROR_DETECT				STD_HIGH
-
+/* Controller Ports */
 #define  PORT_A								3
 #define  PORT_B								2
 #define  PORT_C								1
 #define  PORT_D								0
-
+/* Module IDs*/
 #define	DIO_MODULE_ID						1
 #define	DIO_INSTANCE_ID						0
 
@@ -54,8 +54,31 @@ typedef struct
 extern const Dio_ChannelGroupType ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS];
 
 
-
+/************************************************************************************
+ * Service Name: Dio_ReadChannel 													*
+ * Service ID[hex]: 0x00															*
+ * Sync/Async: Synchronous 															*
+ * Reentrancy: Reentrant 															*
+ * Parameters (in): ChannelId -> ID of DIO channel. 								*
+ * Parameters (inout): None 														*
+ * Parameters (out): None 															*
+ * Return value: Dio_LevelType ->  STD_HIGH or STD_LOW								*
+ * Description: Function to read the value of the specified DIO channel.    		*
+ ************************************************************************************/
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId);
+
+/************************************************************************************
+ * Service Name: Dio_WriteChannel 													*
+ * Service ID[hex]: 0x01															*
+ * Sync/Async: Synchronous 															*
+ * Reentrancy: Reentrant 															*
+ * Parameters (in): ChannelId -> ID of DIO channel. 								*
+ *  				Level     -> Value to be written.	 							*
+ * Parameters (inout): None 														*
+ * Parameters (out): None 															*
+ * Return value: None																*
+ * Description: Function to set the specified Level for the specified channel. 		*
+ ************************************************************************************/
 void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level);
 
 /*********************************************************************************************************/
