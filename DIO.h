@@ -9,6 +9,23 @@
 #include "Std_Types.h"
 #include "DIO_Cfg.h"
 
+/*Default configuration guard*/
+#ifndef DIO_DEV_ERROR_SETECT 
+#define DIO_DEV_ERROR_SETECT FALSE
+#endif
+
+#ifndef DIO_FLIP_CHANNEL_API 
+#define DIO_DEV_ERROR_SETECT FALSE
+#endif
+
+#ifndef DIO_MASKED_WRITE_PORT_API
+#define DIO_MASKED_WRITE_PORT_API FALSE
+#endif
+
+#ifndef DIO_VERSION_INFO_API
+#define DIO_VERSION_INFO_API FALSE
+#endif
+
 #define DIO_VENDOR_ID    				(uint16)1
 #define DIO_SW_MAJOR_VERSION           	(uint8)1
 #define DIO_SW_MINOR_VERSION           	(uint8)2
@@ -179,6 +196,7 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
  ************************************************************************************/
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_PortLevelType Level );
 
+#define DIO_VERSION_INFO_API == TRUE
 /************************************************************************************
 * Service Name: Dio_GetVersionInfo													*
 * Service ID[hex]: 0x12																*
@@ -192,7 +210,9 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 * Description: Function to get the version information of this module.				*
 ************************************************************************************/
 void Dio_GetVersionInfo(Std_VersionInfoType *versioninfo);
+#endif
 
+#define DIO_FLIP_CHANNEL_API == TRUE
 /*********************************************************************************************************/
 /* Service Name: Dio_FlipChannel                                                                         */
 /* Service ID[hex]: 0x11                                                                                 */
@@ -218,7 +238,32 @@ void Dio_GetVersionInfo(Std_VersionInfoType *versioninfo);
 /*                        of the next Read-Service.                                                      */
 /*********************************************************************************************************/
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId);
+#endif
 
+#if DIO_MASKED_WRITE_PORT_API == TRUE
+/********************************************************************************************************/
+/*Service Name: 	Dio_MaskedWritePort 																*/
+/*Service ID: 		[hex]0x13 																			*/
+/*Sync/Async:		Synchronous																			*/
+/*Reentrancy:		Reentrant 																			*/
+/*Parameters (in):	PortId -> ID of DIO Port 															*/
+/*					Level  -> Value to be written 														*/
+/*					Mask   -> Channels to be masked in the port 										*/
+/*Parameters (inout): None 																				*/
+/*Parameters (out): None 																				*/
+/*Return value: None 																					*/
+/*Description: Service to set the value of a given port with required mask. 							*/
+/*Available via: Dio.h 																					*/
+/*SW Requirements Coverage: 																			*/
+/*	1- [SWS_Dio_00202] ⌈ The Dio_MaskedWritePort function shall set the specified value for 			*/
+/*	the channels in the specified port if the corresponding bit in Mask is '1'. ⌋ (SRS_Dio_12003)		*/
+/*	2- [SWS_Dio_00203] ⌈When the Dio_MaskedWritePort function is called, DIO Channels that are 			*/
+/*	configured as input shall remain unchanged. ⌋ (SRS_Dio_12003) 										*/
+/*	3- [SWS_Dio_00204] ⌈ When writing a port which is smaller than the Dio_PortLevelType using the 		*/
+/*	Dio_MaskedWritePort function (see [SWS_Dio_00103]), the function shall ignore the MSB.⌋ () 			*/
+/********************************************************************************************************/
 
+void Dio_MaskedWritePort ( Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortLevelType Mask );
+#endif
 
 #endif

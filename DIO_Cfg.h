@@ -11,7 +11,7 @@
 #define RGB_LED_PORT_GROUP_1						PORT_A
 #define RGB_LED_MASK_GROUP_1						0b00011100
 #define RGB_LED_OFFSET_GROUP_1						2
-#define RGB_LED										(Dio_ChannelGroupType*) Groups[0]
+#define RGB_LED										(&ConfigueredChnannelGroups[0])
 
 /*Dio channel*/
 #define DIO_NUMBER_OF_CHANNELS 2
