@@ -16,7 +16,11 @@
 #define GROUP_1		(Dio_ChannelGroupType*) Groups[0]
 
 
-
+/*DIO Ports Symbolic Names
+ * OPTIONS:
+ * PORT_A  PORT_B  PORT_C  PORT_D */
+#define LEDS_PORT                        PORT_A
+#define SEVEN_SEGMENT_PORT               PORT_D
 
 
 

@@ -1,5 +1,5 @@
-#include "Det.h"
 #include "DIO.h"
+#include "Det.h"
 #include "DIO_MemMap.h"
 #include "SchM_Dio.h"
 
@@ -17,6 +17,13 @@
 #define DDRD	(*(volatile uint8*)0x0031)
 #define PIND	(*(volatile uint8*)0x0030)
 
+typedef struct
+{
+	u8 PIN;
+	u8 DDR;
+	u8 PORT;
+
+}DIO_Peripherals;
 
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 {
@@ -77,44 +84,80 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 
 }
 
+
 Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
 {
-	Dio_PortLevelType PortLevel;
 
-	if (4 <= PortId)
+	DIO_Peripherals * DIO = (DIO_Peripherals *) &PIND;
+	Dio_LevelType Result = 0x00;
+
+	/*Error Detection is Activated during the Development Time based on the value of DIO_DEV_ERROR_DETECT*/
+	#if DIO_DEV_ERROR_DETECT == STD_HIGH
+		if(NUM_OF_PORTS <= PortId)
+		{
+			/*Report error to the DET Module*/
+			 Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_READ_PORT_SID, DIO_E_PARAM_INVALID_PORT_ID);
+
+		}
+		else
+		{
+			/*PortId is valid*/
+		}
+	#endif
+
+	/* Check if the input argument is right */
+	if (PortId < NUM_OF_PORTS)
 	{
-		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_WRITE_PORT_SID, DIO_E_PARAM_INVALID_PORT_ID);
-	}	
+		/* Entering the Critical Section "Disabling Global Interrupt" */
+		DISABLE_GLOBAL_INTERRUPTS();
+
+		/* read the Input Pins and Output Pins separately  */
+		Result = ( ( (~(DIO[PortId].DDR) ) & (DIO[PortId].PIN) ) | ( (DIO[PortId].DDR) & (DIO[PortId].PORT) ) );
+
+		/* Exiting the Critical Section "Enabling Global Interrupt" */
+		ENABLE_GLOBAL_INTERRUPTS();
+	}
 	else
 	{
-		switch( PortId )
-		{
-		case 0: PortLevel = PORTA; break;
-		case 1: PortLevel = PORTB; break;
-		case 2: PortLevel = PORTC; break;
-		case 3: PortLevel = PORTD; break;
-		default: break;
-		}
+		/*Do nothing*/
 	}
-	return PortLevel;
+
+	return Result;
 }
 
 void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
 {
-	if (4 <= PortId)
+	DIO_Peripherals * DIO = (DIO_Peripherals *)  &PIND;
+
+	/*Error Detection is Activated during the Development Time based on the value of DIO_DEV_ERROR_DETECT*/
+	#if DIO_DEV_ERROR_DETECT == STD_HIGH
+		if(NUM_OF_PORTS <= PortId)
+		{
+			/*Report error to the DET Module */
+			Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_READ_PORT_SID, DIO_E_PARAM_INVALID_PORT_ID);
+
+		}
+		else
+		{
+			/*PortId is valid*/
+		}
+	#endif
+
+	/* Check if the input argument is right */
+	if (PortId < NUM_OF_PORTS)
 	{
-		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_WRITE_PORT_SID, DIO_E_PARAM_INVALID_PORT_ID);
-	}	
+		/* Entering the Critical Section "Disabling Global Interrupt" */
+		DISABLE_GLOBAL_INTERRUPTS();
+
+		/* Writing the values to the output pins without changing the values of the input pins */
+		DIO[PortId].PORT  = ( ( (~(DIO[PortId].DDR)) & (DIO[PortId].PORT) ) | ( (DIO[PortId].DDR) & Level ) ) ;
+
+		/* Exiting the Critical Section "Enabling Global Interrupt" */
+		ENABLE_GLOBAL_INTERRUPTS();
+	}
 	else
 	{
-		switch( PortId )
-		{
-		case 0: PORTA = Level; break;
-		case 1: PORTB = Level; break;
-		case 2: PORTC = Level; break;
-		case 3: PORTD = Level; break;
-		default: break;
-		}
+		/*Do nothing*/
 	}
 
 }
