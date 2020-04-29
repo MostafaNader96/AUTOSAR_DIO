@@ -196,7 +196,7 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
  ************************************************************************************/
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_PortLevelType Level );
 
-#define DIO_VERSION_INFO_API == TRUE
+#if DIO_VERSION_INFO_API == TRUE
 /************************************************************************************
 * Service Name: Dio_GetVersionInfo													*
 * Service ID[hex]: 0x12																*
@@ -212,7 +212,7 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 void Dio_GetVersionInfo(Std_VersionInfoType *versioninfo);
 #endif
 
-#define DIO_FLIP_CHANNEL_API == TRUE
+#if DIO_FLIP_CHANNEL_API == TRUE
 /*********************************************************************************************************/
 /* Service Name: Dio_FlipChannel                                                                         */
 /* Service ID[hex]: 0x11                                                                                 */

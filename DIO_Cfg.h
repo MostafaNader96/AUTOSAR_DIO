@@ -34,16 +34,16 @@
 true: detection and notification is enabled.
 false: detection and notification is disabled
 */
-#define DIO_DEV_ERROR_SETECT FALSE
+#define DIO_DEV_ERROR_SETECT TRUE
 
 /*Adds / removes the service Dio_FlipChannel() from the code.*/
-#define DIO_FLIP_CHANNEL_API FALSE
+#define DIO_FLIP_CHANNEL_API TRUE
 
 /*Adds / removes the service Dio_MaskedWritePort() from the code.*/
-#define DIO_MASKED_WRITE_PORT_API FALSE
+#define DIO_MASKED_WRITE_PORT_API TRUE
 
 /*Adds / removes the service Dio_ GetVersionInfo() from the code.*/
-#define DIO_VERSION_INFO_API FALSE
+#define DIO_VERSION_INFO_API TRUE
 
 
 #endif

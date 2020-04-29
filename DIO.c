@@ -223,9 +223,9 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
 	uint8 Group_Detected=FALSE;
 	DIO_Peripherals * DIO;
 
-	if( ( ( (u16)ConfigueredChnannelGroups ) <= ( (u16)ChannelGroupIdPtr ) ) &&\
-	( ( (u16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (u16)ChannelGroupIdPtr ) ) &&\
-	!( ( (u16)ConfigueredChnannelGroups ) % ( (u16)sizeof(Dio_ChannelGroupType) ) ) )
+	if( ( ( (uint16)ConfigueredChnannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	( ( (uint16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	!( ( (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
 	{
 		/* Entering the Critical Section "Disabling Global Interrupt" */
 		asm("cli");
@@ -251,9 +251,9 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 	uint8 Group_Detected=FALSE;
 	DIO_Peripherals * DIO = (DIO_Peripherals *)  &PIND;
 
-	if( ( ( (u16)ConfigueredChnannelGroups ) <= ( (u16)ChannelGroupIdPtr ) ) &&\
-	( ( (u16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (u16)ChannelGroupIdPtr ) ) &&\
-	!( ( (u16)ConfigueredChnannelGroups ) % ( (u16)sizeof(Dio_ChannelGroupType) ) ) )
+	if( ( ( (uint16)ConfigueredChnannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	( ( (uint16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	!( ( (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
 	{
 		asm("cli"); /*Disable global interrupt*/
 		DIO[ChannelGroupIdPtr->PortIndex].PORT = ( DIO[ChannelGroupIdPtr->PortIndex].PORT  & ( ~( ChannelGroupIdPtr->mask ) | ~( DIO[ChannelGroupIdPtr->PortIndex].DDR ) ) ) | ( ( Level << ChannelGroupIdPtr->offset ) & DIO[ChannelGroupIdPtr->PortIndex].DDR );
@@ -358,7 +358,7 @@ void Dio_MaskedWritePort ( Dio_PortType PortId, Dio_PortLevelType Level, Dio_Por
 		asm("cli");
 
 		/* Writing the values to the output pins without changing the values of the input pins */
-		DIO[PortId].PORT  = mask & ( ( (~(DIO[PortId].DDR)) & (DIO[PortId].PORT) ) | ( (DIO[PortId].DDR) & Level ) ) ;
+		DIO[PortId].PORT  = Mask & ( ( (~(DIO[PortId].DDR)) & (DIO[PortId].PORT) ) | ( (DIO[PortId].DDR) & Level ) ) ;
 
 		/* Exiting the Critical Section "Enabling Global Interrupt" */
 		asm("sei");
