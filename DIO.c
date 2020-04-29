@@ -225,7 +225,7 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
 
 	if( ( ( (uint16)ConfigueredChnannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
 	( ( (uint16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
-	!( ( (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
+	!( ( (uint16)ChannelGroupIdPtr - (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
 	{
 		/* Entering the Critical Section "Disabling Global Interrupt" */
 		asm("cli");
@@ -253,7 +253,7 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 
 	if( ( ( (uint16)ConfigueredChnannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
 	( ( (uint16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
-	!( ( (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
+	!( ( (uint16)ChannelGroupIdPtr - (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
 	{
 		asm("cli"); /*Disable global interrupt*/
 		DIO[ChannelGroupIdPtr->PortIndex].PORT = ( DIO[ChannelGroupIdPtr->PortIndex].PORT  & ( ~( ChannelGroupIdPtr->mask ) | ~( DIO[ChannelGroupIdPtr->PortIndex].DDR ) ) ) | ( ( Level << ChannelGroupIdPtr->offset ) & DIO[ChannelGroupIdPtr->PortIndex].DDR );
