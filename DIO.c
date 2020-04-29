@@ -55,8 +55,8 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 		else
 		{
 			asm("cli");	/*Disable global interrupt*/
-			Local_Direction=((*(channels[ChannelId].DDR_ptr)) >> channels[ChannelId].pin) & GET_BIT;
-			Local_Dio_LevelType = ((*(channels[ChannelId].DDR_ptr + (PIN_PORT_MULT*Local_Direction - PIN_PORT_SUB))) >> channels[ChannelId].pin )& GET_BIT;
+			Local_Direction=((*(ConfiguredChannels[ChannelId].DDR_ptr)) >> ConfiguredChannels[ChannelId].pin) & GET_BIT;
+			Local_Dio_LevelType = ((*(ConfiguredChannels[ChannelId].DDR_ptr + (PIN_PORT_MULT*Local_Direction - PIN_PORT_SUB))) >> ConfiguredChannels[ChannelId].pin )& GET_BIT;
 			asm("sei");	/*Enable global interrupt*/
 		}
 	#elif DIO_DEV_ERROR_DETECT == STD_LOW
@@ -85,20 +85,20 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 	}
 	else
 	{
-		PinDirection = *(configueredChannels[ChannelId].DDR_ptr) &  ( GET_BIT <<( configueredChannels[ChannelId].pin ) );
+		PinDirection = *(ConfiguredChannels[ChannelId].DDR_ptr) &  ( GET_BIT <<( ConfiguredChannels[ChannelId].pin ) );
 		
 		if ( OUTPUT == PinDirection )
 		{
 			if( STD_HIGH == Level )
 			{
 				asm("cli");	/*Disable global interrupt*/
-				*(configueredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) |= ( SET_BIT << configueredChannels[ChannelId].pin );
+				*(ConfiguredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) |= ( SET_BIT << ConfiguredChannels[ChannelId].pin );
 				asm("sei");	/*Enable global interrupt*/
 			}
 			else if( STD_LOW == Level )
 			{
 				asm("cli");	/*Disable global interrupt*/
-				*(configueredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) &= ~ ( CLR_BIT << configueredChannels[ChannelId].pin );
+				*(ConfiguredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) &= ~ ( CLR_BIT << ConfiguredChannels[ChannelId].pin );
 				asm("sei");	/*Enable global interrupt*/
 			}
 			else
@@ -223,9 +223,9 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
 	uint8 Group_Detected=FALSE;
 	DIO_Peripherals * DIO;
 
-	if( ( ( (uint16)ConfigueredChnannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
-	( ( (uint16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
-	!( ( (uint16)ChannelGroupIdPtr - (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
+	if( ( ( (uint16)ConfiguredChannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	( ( (uint16)(&ConfiguredChannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	!( ( (uint16)ChannelGroupIdPtr - (uint16)ConfiguredChannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
 	{
 		/* Entering the Critical Section "Disabling Global Interrupt" */
 		asm("cli");
@@ -251,9 +251,9 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 	uint8 Group_Detected=FALSE;
 	DIO_Peripherals * DIO = (DIO_Peripherals *)  &PIND;
 
-	if( ( ( (uint16)ConfigueredChnannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
-	( ( (uint16)(&ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
-	!( ( (uint16)ChannelGroupIdPtr - (uint16)ConfigueredChnannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
+	if( ( ( (uint16)ConfiguredChannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	( ( (uint16)(&ConfiguredChannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS-1]) ) >= ( (uint16)ChannelGroupIdPtr ) ) &&\
+	!( ( (uint16)ChannelGroupIdPtr - (uint16)ConfiguredChannelGroups ) % ( (uint16)sizeof(Dio_ChannelGroupType) ) ) )
 	{
 		asm("cli"); /*Disable global interrupt*/
 		DIO[ChannelGroupIdPtr->PortIndex].PORT = ( DIO[ChannelGroupIdPtr->PortIndex].PORT  & ( ~( ChannelGroupIdPtr->mask ) | ~( DIO[ChannelGroupIdPtr->PortIndex].DDR ) ) ) | ( ( Level << ChannelGroupIdPtr->offset ) & DIO[ChannelGroupIdPtr->PortIndex].DDR );
@@ -302,11 +302,11 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
 	uint8 Channel_Num;
 	if( DIO_NUMBER_OF_CHANNELS > ChannelId )
 	{
-		PORTx		= ((ConfigueredChnannels[ChannelId].DDR_ptr)+UINT8_PTR_STEP);
-		PINx	    = ((ConfigueredChnannels[ChannelId].DDR_ptr)-UINT8_PTR_STEP);
-		DDRx     	= (ConfigueredChnannels[ChannelId].DDR_ptr);
-		Channel_Num =  ConfigueredChnannels[ChannelId].pin;
-		if(OUTPUT == (*DDRx>>Channel_Num)&GET_BIT)
+		PORTx		= ((ConfiguredChannels[ChannelId].DDR_ptr)+UINT8_PTR_STEP);
+		PINx	    = ((ConfiguredChannels[ChannelId].DDR_ptr)-UINT8_PTR_STEP);
+		DDRx     	= (ConfiguredChannels[ChannelId].DDR_ptr);
+		Channel_Num =  ConfiguredChannels[ChannelId].pin;
+		if(OUTPUT == (((*DDRx)>>Channel_Num)&GET_BIT))
 		{
 			/*Disable Global Interrupts*/
 			asm("CLI");

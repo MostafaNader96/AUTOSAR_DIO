@@ -12,14 +12,14 @@
 #define DDRD_ADRR 0x31
 
 
-const Dio_ChannelCfgType ConfigueredChnannels[DIO_NUMBER_OF_CHANNELS]=
+const Dio_ChannelCfgType ConfiguredChannels[DIO_NUMBER_OF_CHANNELS]=
 {
 	/*PORT			pin*/
 	{DDRB_ADRR 	,	5},
 	{DDRA_ADRR 	,	3}
 };
 
-const Dio_ChannelGroupType ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS]=
+const Dio_ChannelGroupType ConfiguredChannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS]=
 {
 		{
 				.PortIndex=RGB_LED_PORT_GROUP_1,

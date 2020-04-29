@@ -7,7 +7,7 @@
 #define DIO_H_
 
 #include "Std_Types.h"
-#include "DIO_Cfg.h"
+
 
 /*Default configuration guard*/
 #ifndef DIO_DEV_ERROR_SETECT 
@@ -79,9 +79,8 @@ typedef struct
 } Dio_ChannelGroupType;
 
 
-extern const Dio_ChannelGroupType ConfigueredChnannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS];
 
-
+#include "DIO_Cfg.h"
 /************************************************************************************
  * Service Name: Dio_ReadChannel 													*
  * Service ID[hex]: 0x00															*

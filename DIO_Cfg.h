@@ -44,7 +44,8 @@ false: detection and notification is disabled
 
 /*Adds / removes the service Dio_ GetVersionInfo() from the code.*/
 #define DIO_VERSION_INFO_API TRUE
-
+extern const Dio_ChannelCfgType ConfiguredChannels[DIO_NUMBER_OF_CHANNELS];
+extern const Dio_ChannelGroupType ConfiguredChannelGroups[DIO_NUMBER_OF_CHANNEL_GROUPS];
 
 #endif
 

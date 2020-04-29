@@ -7,10 +7,10 @@
 #define PLATFORM_TYPES_H_
 
 #ifndef FALSE
-#define FALSE       0
+#define FALSE       1
 #endif
 #ifndef TRUE
-#define TRUE        1
+#define TRUE        2
 #endif
 
 typedef unsigned char 		uint8;
