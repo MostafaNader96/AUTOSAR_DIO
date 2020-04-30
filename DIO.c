@@ -46,7 +46,7 @@ typedef struct
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 {
 	Dio_LevelType Local_Dio_LevelType=STD_LOW;
-	uint8 Local_Direction;
+	uint8 PinDirection;
 	#if DIO_DEV_ERROR_DETECT == STD_HIGH
 		if (DIO_NUMBER_OF_CHANNELS<=ChannelId)
 		{
@@ -55,38 +55,33 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 		else
 		{
 			asm("cli");	/*Disable global interrupt*/
-			Local_Direction=((*(ConfiguredChannels[ChannelId].DDR_ptr)) >> ConfiguredChannels[ChannelId].pin) & GET_BIT;
-			Local_Dio_LevelType = ((*(ConfiguredChannels[ChannelId].DDR_ptr + (PIN_PORT_MULT*Local_Direction - PIN_PORT_SUB))) >> ConfiguredChannels[ChannelId].pin )& GET_BIT;
+			PinDirection=((*(ConfiguredChannels[ChannelId].DDR_ptr)) >> ConfiguredChannels[ChannelId].pin) & GET_BIT;
+			Local_Dio_LevelType = ((*(ConfiguredChannels[ChannelId].DDR_ptr + (PIN_PORT_MULT*PinDirection - PIN_PORT_SUB))) >> ConfiguredChannels[ChannelId].pin )& GET_BIT;
 			asm("sei");	/*Enable global interrupt*/
 		}
 	#elif DIO_DEV_ERROR_DETECT == STD_LOW
 		if(NUMBER_OF_CHANNELS>ChannelId)
 		{
 			asm("cli");	/*Disable global interrupt*/
-			Local_Direction=((*(channels[ChannelId].DDR_ptr)) >> channels[ChannelId].pin) & GET_BIT;
-			Local_Dio_LevelType = ((*(channels[ChannelId].DDR_ptr + (PIN_PORT_MULT*Local_Direction - PIN_PORT_SUB))) >> channels[ChannelId].pin )& GET_BIT;
+			PinDirection=((*(channels[ChannelId].DDR_ptr)) >> channels[ChannelId].pin) & GET_BIT;
+			Local_Dio_LevelType = ((*(channels[ChannelId].DDR_ptr + (PIN_PORT_MULT*PinDirection - PIN_PORT_SUB))) >> channels[ChannelId].pin )& GET_BIT;
 			asm("sei");	/*Enable global interrupt*/
 		}
 	#endif
-	if(Local_Dio_LevelType!=STD_LOW)
-		Local_Dio_LevelType=STD_HIGH;
 	return Local_Dio_LevelType;
 }
 
 void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 {
 	uint8 PinDirection = INITIAL_VALUE_ZERO;
-	
 	#if DIO_DEV_ERROR_DETECT == STD_HIGH
-	
 	if (DIO_NUMBER_OF_CHANNELS <= ChannelId)
 	{
 		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_WRITE_CHANNEL_SID, DIO_E_PARAM_INVALID_CHANNEL_ID);
 	}
 	else
 	{
-		PinDirection = *(ConfiguredChannels[ChannelId].DDR_ptr) &  ( GET_BIT <<( ConfiguredChannels[ChannelId].pin ) );
-		
+		PinDirection = ((*(ConfiguredChannels[ChannelId].DDR_ptr)) >> ConfiguredChannels[ChannelId].pin) & GET_BIT;
 		if ( OUTPUT == PinDirection )
 		{
 			if( STD_HIGH == Level )
@@ -112,8 +107,7 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 		}
 	}
 	#elif DIO_DEV_ERROR_DETECT == STD_LOW
-	PinDirection = *(configueredChannels[ChannelId].DDR_ptr) &  ( GET_BIT <<( configueredChannels[ChannelId].pin ) );
-	
+	PinDirection = ((*(ConfiguredChannels[ChannelId].DDR_ptr)) >> ConfiguredChannels[ChannelId].pin) & GET_BIT;
 	if ( OUTPUT == PinDirection )
 	{
 		if( STD_HIGH == Level )
