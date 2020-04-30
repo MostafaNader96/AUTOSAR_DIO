@@ -8,24 +8,6 @@
 
 #include "Std_Types.h"
 
-
-/*Default configuration guard*/
-#ifndef DIO_DEV_ERROR_SETECT 
-#define DIO_DEV_ERROR_SETECT FALSE
-#endif
-
-#ifndef DIO_FLIP_CHANNEL_API 
-#define DIO_DEV_ERROR_SETECT FALSE
-#endif
-
-#ifndef DIO_MASKED_WRITE_PORT_API
-#define DIO_MASKED_WRITE_PORT_API FALSE
-#endif
-
-#ifndef DIO_VERSION_INFO_API
-#define DIO_VERSION_INFO_API FALSE
-#endif
-
 #define DIO_VENDOR_ID    				(uint16)1
 #define DIO_SW_MAJOR_VERSION           	(uint8)1
 #define DIO_SW_MINOR_VERSION           	(uint8)2
@@ -81,6 +63,24 @@ typedef struct
 
 
 #include "DIO_Cfg.h"
+
+/*Default configuration guard*/
+#ifndef DIO_DEV_ERROR_SETECT
+#define DIO_DEV_ERROR_SETECT FALSE
+#endif
+
+#ifndef DIO_FLIP_CHANNEL_API
+#define DIO_FLIP_CHANNEL_API FALSE
+#endif
+
+#ifndef DIO_MASKED_WRITE_PORT_API
+#define DIO_MASKED_WRITE_PORT_API FALSE
+#endif
+
+#ifndef DIO_VERSION_INFO_API
+#define DIO_VERSION_INFO_API FALSE
+#endif
+
 /************************************************************************************
  * Service Name: Dio_ReadChannel 													*
  * Service ID[hex]: 0x00															*

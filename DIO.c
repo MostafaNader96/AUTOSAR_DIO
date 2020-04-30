@@ -4,7 +4,7 @@
 /* Date    : 28-4-2020        */
 /******************************/
 #include "DIO.h"
-#if DIO_DEV_ERROR_DETECT == STD_HIGH
+#if DIO_DEV_ERROR_DETECT == TRUE
 #include "Det.h"
 #endif
 #include "DIO_MemMap.h"
@@ -47,7 +47,7 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 {
 	Dio_LevelType Local_Dio_LevelType=STD_LOW;
 	uint8 PinDirection;
-	#if DIO_DEV_ERROR_DETECT == STD_HIGH
+	#if DIO_DEV_ERROR_DETECT == TRUE
 		if (DIO_NUMBER_OF_CHANNELS<=ChannelId)
 		{
 			Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_READ_CHANNEL_SID, DIO_E_PARAM_INVALID_CHANNEL_ID);
@@ -59,12 +59,12 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 			Local_Dio_LevelType = ((*(ConfiguredChannels[ChannelId].DDR_ptr + (PIN_PORT_MULT*PinDirection - PIN_PORT_SUB))) >> ConfiguredChannels[ChannelId].pin )& GET_BIT;
 			asm("sei");	/*Enable global interrupt*/
 		}
-	#elif DIO_DEV_ERROR_DETECT == STD_LOW
-		if(NUMBER_OF_CHANNELS>ChannelId)
+	#elif DIO_DEV_ERROR_DETECT == FALSE
+		if(DIO_NUMBER_OF_CHANNELS>ChannelId)
 		{
 			asm("cli");	/*Disable global interrupt*/
-			PinDirection=((*(channels[ChannelId].DDR_ptr)) >> channels[ChannelId].pin) & GET_BIT;
-			Local_Dio_LevelType = ((*(channels[ChannelId].DDR_ptr + (PIN_PORT_MULT*PinDirection - PIN_PORT_SUB))) >> channels[ChannelId].pin )& GET_BIT;
+			PinDirection=((*(ConfiguredChannels[ChannelId].DDR_ptr)) >> ConfiguredChannels[ChannelId].pin) & GET_BIT;
+			Local_Dio_LevelType = ((*(ConfiguredChannels[ChannelId].DDR_ptr + (PIN_PORT_MULT*PinDirection - PIN_PORT_SUB))) >> ConfiguredChannels[ChannelId].pin )& GET_BIT;
 			asm("sei");	/*Enable global interrupt*/
 		}
 	#endif
@@ -74,7 +74,7 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 {
 	uint8 PinDirection = INITIAL_VALUE_ZERO;
-	#if DIO_DEV_ERROR_DETECT == STD_HIGH
+	#if DIO_DEV_ERROR_DETECT == TRUE
 	if (DIO_NUMBER_OF_CHANNELS <= ChannelId)
 	{
 		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_WRITE_CHANNEL_SID, DIO_E_PARAM_INVALID_CHANNEL_ID);
@@ -106,20 +106,20 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 			/* Do nothing as the pin is input */
 		}
 	}
-	#elif DIO_DEV_ERROR_DETECT == STD_LOW
+	#elif DIO_DEV_ERROR_DETECT == FALSE
 	PinDirection = ((*(ConfiguredChannels[ChannelId].DDR_ptr)) >> ConfiguredChannels[ChannelId].pin) & GET_BIT;
 	if ( OUTPUT == PinDirection )
 	{
 		if( STD_HIGH == Level )
 		{
 			asm("cli");	/*Disable global interrupt*/
-			*(configueredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) |= SET_BIT << configueredChannels[ChannelId].pin;
+			*(ConfiguredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) |= SET_BIT << ConfiguredChannels[ChannelId].pin;
 			asm("sei");	/*Enable global interrupt*/
 		}
 		else if( STD_LOW == Level )
 		{
 			asm("cli");	/*Disable global interrupt*/
-			*(configueredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) &= ~ ( CLR_BIT << configueredChannels[ChannelId].pin );
+			*(ConfiguredChannels[ChannelId].DDR_ptr + PORT_REG_OFFSET ) &= ~ ( CLR_BIT << ConfiguredChannels[ChannelId].pin );
 			asm("sei");	/*Enable global interrupt*/
 		}
 		else
@@ -141,7 +141,7 @@ Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
 	Dio_LevelType Result = 0x00;
 
 	/*Error Detection is Activated during the Development Time based on the value of DIO_DEV_ERROR_DETECT*/
-#if DIO_DEV_ERROR_DETECT == STD_HIGH
+#if DIO_DEV_ERROR_DETECT == TRUE
 	if(NUM_OF_PORTS <= PortId)
 	{
 		/*Report error to the DET Module*/
@@ -178,7 +178,7 @@ void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
 	DIO_Peripherals * DIO = (DIO_Peripherals *)  &PIND;
 
 	/*Error Detection is Activated during the Development Time based on the value of DIO_DEV_ERROR_DETECT*/
-#if DIO_DEV_ERROR_DETECT == STD_HIGH
+#if DIO_DEV_ERROR_DETECT == TRUE
 	if(NUM_OF_PORTS <= PortId)
 	{
 		/*Report error to the DET Module */
@@ -213,8 +213,6 @@ void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
 Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr )
 {
 	Dio_PortLevelType Group;
-	uint8 Group_Iterator;
-	uint8 Group_Detected=FALSE;
 	DIO_Peripherals * DIO;
 
 	if( ( ( (uint16)ConfiguredChannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
@@ -241,8 +239,6 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
 
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_PortLevelType Level )
 {
-	uint8 Group_Iterator;
-	uint8 Group_Detected=FALSE;
 	DIO_Peripherals * DIO = (DIO_Peripherals *)  &PIND;
 
 	if( ( ( (uint16)ConfiguredChannelGroups ) <= ( (uint16)ChannelGroupIdPtr ) ) &&\
@@ -266,7 +262,7 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr,Dio_Por
 
 void Dio_GetVersionInfo(Std_VersionInfoType *versioninfo)
 {
-#if DIO_DEV_ERROR_DETECT == STD_HIGH
+#if DIO_DEV_ERROR_DETECT == TRUE
 	if(NULL_PTR == versioninfo)
 	{
 		Det_ReportError(DIO_MODULE_ID, DIO_INSTANCE_ID,DIO_GET_VERSION_INFO_SID, DIO_E_PARAM_POINTER);
@@ -315,7 +311,7 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
 	}else
 	{
 		/*Error Detection is Activated during the Development Time based on the value of DIO_DEV_ERROR_DETECT*/
-		#if DIO_DEV_ERROR_DETECT == STD_HIGH
+		#if DIO_DEV_ERROR_DETECT == TRUE
 			/*Report error to the DET Module */
 			Det_ReportError(DIO_MODULE_ID,DIO_INSTANCE_ID,DIO_FLIP_CHANNEL_SID,DIO_E_PARAM_INVALID_CHANNEL_ID);
 		#else
@@ -333,7 +329,7 @@ void Dio_MaskedWritePort ( Dio_PortType PortId, Dio_PortLevelType Level, Dio_Por
 	DIO_Peripherals * DIO = (DIO_Peripherals *)  &PIND;
 
 	/*Error Detection is Activated during the Development Time based on the value of DIO_DEV_ERROR_DETECT*/
-#if DIO_DEV_ERROR_DETECT == STD_HIGH
+#if DIO_DEV_ERROR_DETECT == TRUE
 	if(NUM_OF_PORTS <= PortId)
 	{
 		/*Report error to the DET Module */

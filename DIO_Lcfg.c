@@ -6,10 +6,10 @@
 #include "DIO.h"
 #include "DIO_MemMap.h"
 
-#define DDRA_ADRR 0x3A
-#define DDRB_ADRR 0x37
-#define DDRC_ADRR 0x34
-#define DDRD_ADRR 0x31
+#define DDRA_ADRR (uint8*)0x3A
+#define DDRB_ADRR (uint8*)0x37
+#define DDRC_ADRR (uint8*)0x34
+#define DDRD_ADRR (uint8*)0x31
 
 
 const Dio_ChannelCfgType ConfiguredChannels[DIO_NUMBER_OF_CHANNELS]=

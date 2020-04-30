@@ -8,10 +8,11 @@
 
 
 #define DIO_NUMBER_OF_CHANNEL_GROUPS 				1
+
 #define RGB_LED_PORT_GROUP_1						PORT_A
 #define RGB_LED_MASK_GROUP_1						0b00011100
 #define RGB_LED_OFFSET_GROUP_1						2
-#define RGB_LED										(&ConfigueredChnannelGroups[0])
+#define RGB_LED										(&ConfiguredChannelGroups[0])
 
 /*Dio channel*/
 #define DIO_NUMBER_OF_CHANNELS 2
@@ -25,6 +26,8 @@
  * OPTIONS:
  * PORT_A  PORT_B  PORT_C  PORT_D */
 #define LEDS_PORT                        PORT_A
+#define DIO_PORT_B						 PORT_B
+#define DIO_PORT_C						 PORT_C
 #define SEVEN_SEGMENT_PORT               PORT_D
 
 
